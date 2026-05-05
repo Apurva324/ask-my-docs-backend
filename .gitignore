@@ -53,4 +53,4 @@ lib/python3.14/site-packages/
 *.venv/bin/activate.csh
 *.venv/bin/numpy-config
 *.venv/pyvenv.cfg
-*.venv/.gitignore
+*.venv/.gitignore*.pdf
