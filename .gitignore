@@ -1,0 +1,56 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+
+# Virtual Environments
+venv/
+.env
+*.venv/
+
+# Node
+node_modules/
+
+# OS files
+.DS_Store
+*.env
+
+# IDE files
+*.pyd
+*.pym
+*.pyc
+
+# Build files
+__pycache__/
+venv/
+*.egg-info/
+
+# Temporary files
+*.tmp
+*.log
+
+# Build tools
+*.exe
+*.so
+*.dll
+*.o
+
+# Package managers
+requirements.txt
+
+# Python cache
+lib/python3.14/site-packages/
+
+# Specific files
+*.venv/bin/Activate.ps1
+*.venv/bin/pip3.14
+*.venv/bin/pip3
+*.venv/bin/activate.fish
+*.venv/bin/f2py
+*.venv/bin/pip
+*.venv/bin/activate
+*.venv/bin/activate.csh
+*.venv/bin/numpy-config
+*.venv/pyvenv.cfg
+*.venv/.gitignore
