@@ -37,7 +37,6 @@ venv/
 *.o
 
 # Package managers
-requirements.txt
 
 # Python cache
 lib/python3.14/site-packages/
