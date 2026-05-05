@@ -224,7 +224,7 @@ st.markdown("""
     .citation-box {
         background: #f8f9fa; border-left: 4px solid #1a73e8;
         padding: 12px 16px; border-radius: 0 8px 8px 0;
-        margin: 8px 0; font-size: 0.9rem;
+        margin: 8px 0; font-size: 0.9rem; color: #1a1a1a;
     }
     .stButton > button {
         background: #1a73e8; color: white;
