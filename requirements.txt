@@ -4,7 +4,7 @@ langchain-core>=0.2.0
 langchain-community>=0.2.0
 langchain-groq>=0.1.0
 langchain-huggingface
-pinecone-client>=3.0.0
+pinecone
 sentence-transformers>=2.7.0
 transformers
 torch
