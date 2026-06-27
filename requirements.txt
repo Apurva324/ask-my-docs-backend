@@ -7,7 +7,6 @@ redis
 celery
 python-jose[cryptography]
 passlib[bcrypt]
-bcrypt==4.0.1
 python-multipart
 boto3
 langchain>=0.2.0
@@ -16,10 +15,10 @@ langchain-community>=0.2.0
 langchain-groq>=0.1.0
 langchain-huggingface
 pinecone
-sentence-transformers>=2.7.0
 pypdf>=4.0.0
 python-dotenv>=1.0.0
 rank-bm25>=0.2.2
 httpx
 langsmith
-pydantic[email]
+pydantic
+sentence-transformers>=2.7.0
