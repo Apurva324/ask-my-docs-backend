@@ -1,83 +1,132 @@
----
-title: Ask My Docs
-emoji: 📚
-colorFrom: blue
-colorTo: indigo
-sdk: streamlit
-sdk_version: 1.35.0
-app_file: main.py
-pinned: false
----
+# 📚 Ask My Docs — Production AI Backend
 
-# 📚 Ask My Docs
+A production-grade RAG (Retrieval-Augmented Generation) API built with FastAPI, PostgreSQL, Redis, Celery, and Docker. Upload PDFs and ask questions — every answer is grounded with page citations.
 
-A RAG (Retrieval-Augmented Generation) powered document QA app — upload any PDF and ask questions. Every answer is grounded with citations from the document.
+## 🔴 Live API
+**Base URL:** `http://3.109.203.161:8000`  
+**Swagger UI:** `http://3.109.203.161:8000/docs`
 
-## 🚀 Features
+## 🏗️ Architecture
+User → FastAPI (JWT auth)
 
-- **Hybrid Retrieval** — combines Pinecone vector search + BM25 keyword search
-- **Cross-Encoder Re-ranking** — re-ranks candidates for highest relevance
-- **Citation-enforced answers** — every claim is backed by a `[Page X]` reference
-- **Conversation memory** — maintains recent chat history for context
-- **Fast LLM** — powered by Groq's `llama-3.1-8b-instant`
+→ PostgreSQL (users, docs, chat history)
+
+→ Celery + Redis (background PDF indexing)
+
+→ Pinecone (vector search)
+
+→ BM25 (keyword search)
+
+→ Cross-encoder reranking
+
+→ Groq LLaMA 3.1 (streaming answer)
 
 ## 🛠️ Tech Stack
 
 | Layer | Tool |
 |---|---|
-| Embeddings | `sentence-transformers/all-MiniLM-L6-v2` |
-| Vector Store | Pinecone (Serverless) |
-| Keyword Search | BM25 via LangChain |
-| Re-ranker | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
-| LLM | Groq — `llama-3.1-8b-instant` |
-| Frontend | Streamlit |
+| Backend | FastAPI, Python 3.11 |
+| Database | PostgreSQL + SQLAlchemy |
+| Auth | JWT (python-jose) |
+| Vector DB | Pinecone (Serverless) |
+| Keyword Search | BM25 (rank-bm25) |
+| Embeddings | HuggingFace all-MiniLM-L6-v2 |
+| Re-ranker | Cross-encoder ms-marco-MiniLM |
+| LLM | Groq LLaMA 3.1 8B (streaming) |
+| Cache + Queue | Redis |
+| Background Tasks | Celery |
+| Containerization | Docker + Docker Compose |
+| Deployment | AWS EC2 |
 
-## ⚙️ Setup (Local)
+## 🔄 RAG Pipeline
 
-### 1. Clone the repo
+PDF Upload
+
+→ Text extraction (pypdf)
+
+→ Chunking (RecursiveCharacterTextSplitter)
+
+→ Embedding (HuggingFace, 384 dims)
+
+→ Storage (Pinecone + PostgreSQL)
+Query
+
+→ Hybrid retrieval (Pinecone vector + BM25 keyword)
+
+→ Cross-encoder reranking (top 5 from 20 candidates)
+
+→ Citation-enforced streaming answer (Groq LLaMA)
+
+→ Chat history saved to PostgreSQL
+
+## 📡 API Endpoints
+
+### Auth
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/auth/register` | Create account |
+| POST | `/auth/login` | Get JWT token |
+
+### Documents
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/documents/upload` | Upload and index PDF |
+| GET | `/documents/` | List all documents |
+| GET | `/documents/{id}` | Check indexing status |
+| DELETE | `/documents/{id}` | Delete document |
+
+### Chat
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/chat/sessions/{document_id}` | Create chat session |
+| POST | `/chat/ask/{session_id}` | Ask question (streaming) |
+| GET | `/chat/sessions/{session_id}/messages` | Get chat history |
+
+## ⚙️ Local Setup
+
+### Prerequisites
+- Docker + Docker Compose
+- Pinecone API key
+- Groq API key
+
+### Run locally
+
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-cd YOUR_REPO_NAME
+git clone https://github.com/Apurva324/ask-my-docs-backend
+cd ask-my-docs-backend
 ```
 
-### 2. Install dependencies
+Create `.env` file:
+DATABASE_URL=postgresql://postgres:password@db:5432/askdocs
+
+REDIS_URL=redis://redis:6379
+
+SECRET_KEY=your-secret-key
+
+PINECONE_API_KEY=your-pinecone-key
+
+GROQ_API_KEY=your-groq-key
+
+Start all services:
 ```bash
-pip install -r requirements.txt
+docker-compose up --build
 ```
 
-### 3. Set up environment variables
+Open Swagger UI: http://localhost:8000/docs
 
-Create a `.env` file in the root directory:
-```env
-PINECONE_API_KEY=your_pinecone_api_key
-GROQ_API_KEY=your_groq_api_key
-```
+## ✨ Key Features
 
-### 4. Run the app
-```bash
-streamlit run main.py
-```
+- **Hybrid retrieval** — vector search + BM25 keyword search combined
+- **Cross-encoder reranking** — scores top 5 from 20 candidates for accuracy
+- **Citation enforcement** — every answer includes `[Page X]` references
+- **Streaming responses** — token-by-token like ChatGPT
+- **Multi-user support** — JWT auth with per-user document isolation
+- **Background indexing** — Celery processes PDFs asynchronously
+- **Chat history** — full conversation stored in PostgreSQL
 
-## ☁️ Deploying on Hugging Face Spaces
+## 🔗 Related
 
-1. Create a new Space on [huggingface.co/spaces](https://huggingface.co/spaces) with **Streamlit** as the SDK
-2. Add your secrets under **Settings → Variables and Secrets**:
-   - `PINECONE_API_KEY`
-   - `GROQ_API_KEY`
-3. Push this repo to the Space:
-```bash
-git remote add space https://huggingface.co/spaces/YOUR_HF_USERNAME/ask-my-docs
-git push space main
-```
+- **Streamlit Demo:** [Ask My Docs on HuggingFace](https://huggingface.co/spaces/Apurva324/ask-my-docs)
+- **AutoGit CLI:** [Published on PyPI](https://pypi.org/project/ai-git/)
 
-## 📖 How to Use
 
-1. Upload a PDF using the sidebar
-2. Click **Index Document** — chunks are embedded and stored in Pinecone
-3. Ask any question in the chat input
-4. View cited answers and expand **Source Chunks** to see the exact passages used
-
-## 🔑 API Keys Required
-
-- **Pinecone** — [app.pinecone.io](https://app.pinecone.io) (free tier works)
-- **Groq** — [console.groq.com](https://console.groq.com) (free tier works)
