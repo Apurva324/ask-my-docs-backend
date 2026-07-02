@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask My Docs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- AUTH SECTION -->
+    <div id="auth-section" class="section">
+        <div class="auth-container">
+            <h1>📚 Ask My Docs</h1>
+            <p class="subtitle">Upload documents, ask questions, get cited answers</p>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('login')">Login</button>
+                <button class="tab" onclick="showTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form">
+                <input type="email" id="login-email" placeholder="Email" />
+                <input type="password" id="login-password" placeholder="Password" />
+                <button class="btn-primary" onclick="login()">Login</button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" style="display:none">
+                <input type="email" id="reg-email" placeholder="Email" />
+                <input type="password" id="reg-password" placeholder="Password (min 6 chars)" />
+                <button class="btn-primary" onclick="register()">Register</button>
+            </div>
+
+            <p id="auth-error" class="error"></p>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <div id="dashboard-section" class="section" style="display:none">
+        <nav>
+            <h2>📚 Ask My Docs</h2>
+            <button class="btn-secondary" onclick="logout()">Logout</button>
+        </nav>
+
+        <div class="dashboard-container">
+            <!-- Upload Panel -->
+            <div class="panel">
+                <h3>Upload Document</h3>
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    <p>📄 Click to upload PDF</p>
+                    <input type="file" id="file-input" accept=".pdf" 
+                           style="display:none" onchange="uploadFile(this)"/>
+                </div>
+                <p id="upload-status" class="status"></p>
+            </div>
+
+            <!-- Documents List -->
+            <div class="panel">
+                <h3>My Documents</h3>
+                <div id="documents-list">
+                    <p class="loading">Loading documents...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT SECTION -->
+    <div id="chat-section" class="section" style="display:none">
+        <nav>
+            <button class="btn-secondary" onclick="backToDashboard()">← Back</button>
+            <h2 id="chat-doc-name">Document Chat</h2>
+            <button class="btn-secondary" onclick="logout()">Logout</button>
+        </nav>
+
+        <div class="chat-container">
+            <div id="chat-messages" class="chat-messages">
+                <div class="message assistant">
+                    👋 Hi! Ask me anything about this document.
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" 
+                       placeholder="Ask a question..." 
+                       onkeypress="if(event.key==='Enter') sendMessage()"/>
+                <button class="btn-primary" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
