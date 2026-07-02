@@ -4,10 +4,10 @@ from app.database import engine, Base
 import app.models
 from app.routers import auth, documents, chat
 
-
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Ask My Docs API")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
