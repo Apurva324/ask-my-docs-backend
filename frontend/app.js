@@ -1,4 +1,4 @@
-const API_URL = "https://askdocs.duckdns.org";
+const API_URL = "https://askdocs.duckdns.org/api";
 let token = localStorage.getItem("token");
 let currentSessionId = null;
 let currentDocId = null;
