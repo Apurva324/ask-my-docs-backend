@@ -1,9 +1,3 @@
-/* ══════════════════════════════════════════════════════════════════════════════
-   Ask My Docs — Enhanced Frontend Logic
-   Features: Toast notifications, drag-drop, typing indicator, markdown,
-             smooth transitions, loading states, password toggle
-   ══════════════════════════════════════════════════════════════════════════════ */
-
 const API_URL = "https://askdocs.duckdns.org/api";
 let token = localStorage.getItem("token");
 let currentSessionId = null;
