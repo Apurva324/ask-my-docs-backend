@@ -3,89 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ask My Docs</title>
+    <title>Ask My Docs — AI-Powered Document Q&A</title>
+    <meta name="description" content="Upload PDFs and ask questions — every answer is grounded with page citations. Powered by RAG with hybrid retrieval and cross-encoder reranking.">
+    <meta property="og:title" content="Ask My Docs — AI-Powered Document Q&A">
+    <meta property="og:description" content="Upload documents, ask questions, get cited answers instantly.">
+    <meta property="og:type" content="website">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
 
-    <!-- AUTH SECTION -->
+    <!-- ── Background ── -->
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <!-- ── Toast Container ── -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         AUTH SECTION
+         ══════════════════════════════════════════════════════════════════════ -->
     <div id="auth-section" class="section">
-        <div class="auth-container">
-            <h1>📚 Ask My Docs</h1>
-            <p class="subtitle">Upload documents, ask questions, get cited answers</p>
+        <div class="auth-wrapper">
+            <div class="auth-container">
+                <div class="auth-logo">
+                    <span class="logo-icon" aria-hidden="true">📚</span>
+                    <h1>Ask My Docs</h1>
+                </div>
+                <p class="auth-subtitle">Upload documents, ask questions, get cited answers</p>
 
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('login')">Login</button>
-                <button class="tab" onclick="showTab('register')">Register</button>
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab-slider" id="tab-slider"></div>
+                    <button class="tab active" id="tab-login" data-tab="login">Login</button>
+                    <button class="tab" id="tab-register" data-tab="register">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active" autocomplete="on">
+                    <div class="input-group">
+                        <span class="input-icon">✉️</span>
+                        <input type="email" id="login-email" placeholder="Email address" autocomplete="email" required />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required />
+                        <button type="button" class="password-toggle" data-target="login-password" aria-label="Toggle password visibility">👁️</button>
+                    </div>
+                    <button type="submit" class="btn-primary" id="login-btn">
+                        <span class="btn-text">Sign In</span>
+                        <span class="btn-spinner"></span>
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form" autocomplete="on">
+                    <div class="input-group">
+                        <span class="input-icon">✉️</span>
+                        <input type="email" id="reg-email" placeholder="Email address" autocomplete="email" required />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="reg-password" placeholder="Password (min 6 characters)" autocomplete="new-password" minlength="6" required />
+                        <button type="button" class="password-toggle" data-target="reg-password" aria-label="Toggle password visibility">👁️</button>
+                    </div>
+                    <button type="submit" class="btn-primary" id="register-btn">
+                        <span class="btn-text">Create Account</span>
+                        <span class="btn-spinner"></span>
+                    </button>
+                </form>
+
+                <p id="auth-error" class="auth-error"></p>
             </div>
-
-            <!-- Login Form -->
-            <div id="login-form">
-                <input type="email" id="login-email" placeholder="Email" />
-                <input type="password" id="login-password" placeholder="Password" />
-                <button class="btn-primary" onclick="login()">Login</button>
-            </div>
-
-            <!-- Register Form -->
-            <div id="register-form" style="display:none">
-                <input type="email" id="reg-email" placeholder="Email" />
-                <input type="password" id="reg-password" placeholder="Password (min 6 chars)" />
-                <button class="btn-primary" onclick="register()">Register</button>
-            </div>
-
-            <p id="auth-error" class="error"></p>
         </div>
     </div>
 
-    <!-- DASHBOARD SECTION -->
-    <div id="dashboard-section" class="section" style="display:none">
-        <nav>
-            <h2>📚 Ask My Docs</h2>
-            <button class="btn-secondary" onclick="logout()">Logout</button>
+    <!-- ══════════════════════════════════════════════════════════════════════
+         DASHBOARD SECTION
+         ══════════════════════════════════════════════════════════════════════ -->
+    <div id="dashboard-section" class="section">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <span class="brand-icon">📚</span>
+                <h2>Ask My Docs</h2>
+            </div>
+            <div class="navbar-actions">
+                <div class="user-badge" id="user-badge">
+                    <span class="avatar" id="user-avatar">U</span>
+                    <span id="user-email-display">user</span>
+                </div>
+                <button class="btn-secondary" id="logout-btn">Logout</button>
+            </div>
         </nav>
 
-        <div class="dashboard-container">
-            <!-- Upload Panel -->
-            <div class="panel">
-                <h3>Upload Document</h3>
-                <div class="upload-area" onclick="document.getElementById('file-input').click()">
-                    <p>📄 Click to upload PDF</p>
-                    <input type="file" id="file-input" accept=".pdf" 
-                           style="display:none" onchange="uploadFile(this)"/>
+        <div class="dashboard-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>My Documents</h3>
+                    <div class="upload-area" id="upload-area">
+                        <span class="upload-icon">📄</span>
+                        <p>Drop PDF here or <strong>click to upload</strong></p>
+                        <span class="upload-hint">PDF files up to 20MB</span>
+                        <input type="file" id="file-input" accept=".pdf" style="display:none" />
+                    </div>
+                    <div class="upload-status" id="upload-status">
+                        <span id="upload-status-icon"></span>
+                        <span id="upload-status-text"></span>
+                    </div>
                 </div>
-                <p id="upload-status" class="status"></p>
-            </div>
+                <div class="documents-scroll" id="documents-list">
+                    <!-- Documents loaded dynamically -->
+                </div>
+            </aside>
 
-            <!-- Documents List -->
-            <div class="panel">
-                <h3>My Documents</h3>
-                <div id="documents-list">
-                    <p class="loading">Loading documents...</p>
+            <!-- Main Content -->
+            <main class="main-content" id="main-content">
+                <div class="welcome-card">
+                    <span class="welcome-icon">🤖</span>
+                    <h2>Welcome to Ask My Docs</h2>
+                    <p>Upload a PDF document and click on it to start an AI-powered conversation. Every answer includes page citations for verification.</p>
+                    <div class="feature-pills">
+                        <span class="feature-pill">🔍 Hybrid Search</span>
+                        <span class="feature-pill">📖 Page Citations</span>
+                        <span class="feature-pill">⚡ Streaming AI</span>
+                        <span class="feature-pill">🔒 Secure</span>
+                    </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
 
-    <!-- CHAT SECTION -->
-    <div id="chat-section" class="section" style="display:none">
-        <nav>
-            <button class="btn-secondary" onclick="backToDashboard()">← Back</button>
-            <h2 id="chat-doc-name">Document Chat</h2>
-            <button class="btn-secondary" onclick="logout()">Logout</button>
+    <!-- ══════════════════════════════════════════════════════════════════════
+         CHAT SECTION
+         ══════════════════════════════════════════════════════════════════════ -->
+    <div id="chat-section" class="section">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <button class="btn-secondary" id="back-btn">← Back</button>
+            </div>
+            <div class="chat-header-info">
+                <div class="doc-badge" id="chat-doc-badge">
+                    <span>📄</span>
+                    <span id="chat-doc-name">Document</span>
+                </div>
+            </div>
+            <div class="navbar-actions">
+                <button class="btn-secondary" id="chat-logout-btn">Logout</button>
+            </div>
         </nav>
 
-        <div class="chat-container">
-            <div id="chat-messages" class="chat-messages">
+        <div class="chat-layout">
+            <div class="chat-messages" id="chat-messages">
                 <div class="message assistant">
-                    👋 Hi! Ask me anything about this document.
+                    👋 Hi! Ask me anything about this document. Every answer will include page citations so you can verify the information.
                 </div>
             </div>
 
             <div class="chat-input-area">
-                <input type="text" id="chat-input" 
-                       placeholder="Ask a question..." 
-                       onkeypress="if(event.key==='Enter') sendMessage()"/>
-                <button class="btn-primary" onclick="sendMessage()">Send</button>
+                <div class="chat-input-wrapper">
+                    <input type="text" id="chat-input"
+                           placeholder="Ask a question about this document..."
+                           autocomplete="off" />
+                    <button class="chat-send-btn" id="chat-send-btn" disabled aria-label="Send message">
+                        ➤
+                    </button>
+                </div>
+                <p class="chat-hint">Press Enter to send · Ctrl+Enter for new line</p>
             </div>
         </div>
     </div>
