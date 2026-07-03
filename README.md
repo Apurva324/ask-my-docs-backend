@@ -2,9 +2,9 @@
 
 A production-grade RAG (Retrieval-Augmented Generation) API built with FastAPI, PostgreSQL, Redis, Celery, and Docker. Upload PDFs and ask questions — every answer is grounded with page citations.
 
-## 🔴 Live API
-**Base URL:** `http://3.109.203.161:8000`  
-**Swagger UI:** `http://3.109.203.161:8000/docs`
+## Live Demo
+Frontend: https://askdocs.duckdns.org
+API Docs: https://askdocs.duckdns.org/api/docs
 
 ## 🏗️ Architecture
 User → FastAPI (JWT auth)
