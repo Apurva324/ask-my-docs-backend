@@ -15,6 +15,7 @@ from app.services.rag_service import (
     rerank
 )
 from app.services.llm_service import stream_answer, format_context
+from app.services.cache_service import get_cached_answer, set_cached_answer
 
 router = APIRouter()
 
@@ -82,6 +83,31 @@ async def ask_question(
     db.add(user_message)
     db.commit()
 
+    # Cache lookup — only for questions with no prior conversation history.
+    # Once there's history, the same question text can have a different
+    # correct answer depending on what was discussed before (e.g. "what
+    # about the second one?"), so caching there would risk serving a wrong
+    # cached answer. Fresh, first-turn questions are the safe, high-value
+    # case: those are exactly the ones that repeat across different users
+    # asking the same doc the same thing.
+    cached = None
+    if not history_list:
+        cached = get_cached_answer(document.pinecone_namespace, request.question)
+
+    if cached is not None:
+        async def generate_cached():
+            yield cached["answer"]
+            assistant_message = Message(
+                session_id=session_id,
+                role="assistant",
+                content=cached["answer"],
+                sources=cached["sources"]
+            )
+            db.add(assistant_message)
+            db.commit()
+
+        return StreamingResponse(generate_cached(), media_type="text/plain")
+
     # RAG pipeline
     index = get_pinecone_index()
     candidates = hybrid_retrieve(
@@ -112,6 +138,15 @@ async def ask_question(
         )
         db.add(assistant_message)
         db.commit()
+
+        # Populate cache for next time — only after a successful fresh-turn
+        # generation, and only since we already checked history was empty.
+        set_cached_answer(
+            document.pinecone_namespace,
+            request.question,
+            full_answer,
+            sources
+        )
 
     return StreamingResponse(generate(), media_type="text/plain")
 
