@@ -1,0 +1,221 @@
+[
+  {
+    "id": "q1",
+    "question": "What is the bias-variance tradeoff and how do you tell which one is hurting my model?",
+    "expected_answer_facts": [
+      "high bias shows poor performance on both training and validation",
+      "high variance shows strong training performance but weak validation performance",
+      "diagnosed by comparing training vs validation error curves"
+    ],
+    "expected_pages": [2]
+  },
+  {
+    "id": "q2",
+    "question": "What's the difference between bagging and boosting?",
+    "expected_answer_facts": [
+      "bagging trains models in parallel on bootstrapped samples and reduces variance",
+      "boosting trains models sequentially, correcting prior errors, and reduces bias"
+    ],
+    "expected_pages": [2]
+  },
+  {
+    "id": "q3",
+    "question": "How should I deal with an imbalanced dataset?",
+    "expected_answer_facts": [
+      "resampling techniques like SMOTE or undersampling",
+      "class weights in the loss function",
+      "metrics like F1 or PR-AUC instead of accuracy"
+    ],
+    "expected_pages": [2]
+  },
+  {
+    "id": "q4",
+    "question": "What is the curse of dimensionality?",
+    "expected_answer_facts": [
+      "data becomes sparse as feature count grows",
+      "distances between points become less meaningful",
+      "addressed via dimensionality reduction like PCA or feature selection"
+    ],
+    "expected_pages": [3]
+  },
+  {
+    "id": "q5",
+    "question": "Explain backpropagation simply.",
+    "expected_answer_facts": [
+      "computes gradient of loss with respect to each weight via the chain rule",
+      "propagates error backward from output to input layer",
+      "gradients used by an optimizer to update weights"
+    ],
+    "expected_pages": [3]
+  },
+  {
+    "id": "q6",
+    "question": "What causes vanishing or exploding gradients and how do you fix it?",
+    "expected_answer_facts": [
+      "gradients shrink or grow uncontrollably across many layers",
+      "mitigations include ReLU activations, proper weight initialization, batch normalization, gradient clipping",
+      "skip connections like ResNets help"
+    ],
+    "expected_pages": [3]
+  },
+  {
+    "id": "q7",
+    "question": "When would you use a CNN vs RNN vs Transformer?",
+    "expected_answer_facts": [
+      "CNNs suit spatially structured data like images",
+      "RNNs process sequential data via a hidden state, good for shorter sequences",
+      "Transformers use self-attention and are the standard for NLP and long sequences"
+    ],
+    "expected_pages": [3]
+  },
+  {
+    "id": "q8",
+    "question": "What does attention do in a transformer and why was it a breakthrough?",
+    "expected_answer_facts": [
+      "lets the model dynamically weigh importance of different input parts",
+      "solved the fixed-size context vector bottleneck in RNN sequence models",
+      "enables capturing long-range dependencies in parallel"
+    ],
+    "expected_pages": [4]
+  },
+  {
+    "id": "q9",
+    "question": "What's the difference between fine-tuning and prompt engineering for LLMs?",
+    "expected_answer_facts": [
+      "fine-tuning updates model weights using additional training data",
+      "prompt engineering crafts input to elicit behavior without weight updates",
+      "prompt engineering is faster and cheaper but limited by base model knowledge"
+    ],
+    "expected_pages": [4]
+  },
+  {
+    "id": "q10",
+    "question": "What is RAG and when should I use it?",
+    "expected_answer_facts": [
+      "retrieves relevant documents via vector search and injects them into the prompt",
+      "grounds responses in up-to-date or domain-specific information",
+      "used for factual accuracy or access to private data without retraining"
+    ],
+    "expected_pages": [4]
+  },
+  {
+    "id": "q11",
+    "question": "What are hallucinations in LLMs and how do you reduce them?",
+    "expected_answer_facts": [
+      "plausible-sounding but factually incorrect or fabricated content",
+      "reduced via RAG, fine-tuning on quality data, prompting to cite sources or say I don't know",
+      "lowering temperature and adding fact-verification layers helps"
+    ],
+    "expected_pages": [5]
+  },
+  {
+    "id": "q12",
+    "question": "How do you fine-tune an LLM for a specific domain?",
+    "expected_answer_facts": [
+      "curate a high-quality domain-representative dataset",
+      "choose full fine-tuning or parameter-efficient methods like LoRA/QLoRA",
+      "watch for catastrophic forgetting and evaluate on held-out domain data"
+    ],
+    "expected_pages": [5]
+  },
+  {
+    "id": "q13",
+    "question": "What is RLHF and why is it used?",
+    "expected_answer_facts": [
+      "trains a reward model from human preference rankings of outputs",
+      "uses the reward model to fine-tune the LLM via reinforcement learning like PPO",
+      "aligns outputs to be more helpful honest and harmless"
+    ],
+    "expected_pages": [5]
+  },
+  {
+    "id": "q14",
+    "question": "How would you monitor a production model for drift?",
+    "expected_answer_facts": [
+      "track input feature distribution shifts (data drift) using PSI or KL divergence",
+      "monitor concept drift via degrading prediction accuracy",
+      "set automated alerts and a retraining pipeline triggered by drift"
+    ],
+    "expected_pages": [6]
+  },
+  {
+    "id": "q15",
+    "question": "What is a feature store and why is it useful?",
+    "expected_answer_facts": [
+      "centralized system for storing, managing, and serving features consistently",
+      "solves training-serving skew",
+      "supports offline batch and online low-latency access"
+    ],
+    "expected_pages": [6]
+  },
+  {
+    "id": "q16",
+    "question": "How do you scale model inference to millions of requests a day?",
+    "expected_answer_facts": [
+      "model optimization via quantization, distillation, pruning",
+      "batching requests and efficient serving frameworks like TensorRT or Triton",
+      "horizontal scaling, caching, and async queue-based architectures"
+    ],
+    "expected_pages": [6]
+  },
+  {
+    "id": "q17",
+    "question": "What's your approach to CI/CD for ML models?",
+    "expected_answer_facts": [
+      "automated data validation and unit tests for pipeline code",
+      "automated training and evaluation against a benchmark on each change",
+      "staged deployment like shadow or canary with automated rollback triggers"
+    ],
+    "expected_pages": [7]
+  },
+  {
+    "id": "q18",
+    "question": "How would you implement k-means clustering from scratch?",
+    "expected_answer_facts": [
+      "randomly initialize k centroids",
+      "assign each point to nearest centroid then recompute centroids as the mean",
+      "repeat until centroids stop changing or max iterations reached"
+    ],
+    "expected_pages": [7]
+  },
+  {
+    "id": "q19",
+    "question": "A model performs well in training but poorly in production, what could be wrong?",
+    "expected_answer_facts": [
+      "training-serving skew from features computed differently at inference",
+      "data drift between training distribution and live traffic",
+      "data leakage during training or bugs in the production feature pipeline"
+    ],
+    "expected_pages": [7]
+  },
+  {
+    "id": "q20",
+    "question": "How should you split time-series data for training and validation without leakage?",
+    "expected_answer_facts": [
+      "split chronologically so training data comes strictly before validation data",
+      "select a cutoff date/index",
+      "walk-forward validation with rolling or expanding windows is an option"
+    ],
+    "expected_pages": [7]
+  },
+  {
+    "id": "q21",
+    "question": "How do you communicate ML results to non-technical stakeholders?",
+    "expected_answer_facts": [
+      "focus on business impact rather than technical metrics",
+      "use visualizations over statistics tables",
+      "lead with the recommendation before the methodology"
+    ],
+    "expected_pages": [8]
+  },
+  {
+    "id": "q22",
+    "question": "How would you approach a problem with very little labeled data?",
+    "expected_answer_facts": [
+      "transfer learning from a pretrained model",
+      "data augmentation and active learning to prioritize labeling",
+      "semi-supervised, self-supervised learning, or weak supervision"
+    ],
+    "expected_pages": [8]
+  }
+]
